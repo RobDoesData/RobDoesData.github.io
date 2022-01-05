@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Rob Hamilton's Portfolio</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-163494694-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-163494694-1');
+</script>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rob Hamilton's Portfolio Website">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">    
+    <link rel="shortcut icon" href="favicon.ico">  
+    
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+
+    <!-- FontAwesome JS -->
+    <script defer src="assets/fontawesome/js/all.js"></script>
+
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
+
+    <!-- github calendar css -->
+    <link rel="stylesheet" href="assets/plugins/github-calendar/dist/github-calendar.css">
+    <!-- github activity css -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css">
+    <link rel="stylesheet" href="assets/plugins/github-activity/github-activity-0.1.5.min.css">
+
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/styles.css">
+
+
+
+    <!-- MUSTACHE JS-->
+    <script type="text/javascript">
+    (function(root,factory){if(typeof exports==="object"&&exports){module.exports=factory}else if(typeof define==="function"&&define.amd){define(factory)}else{root.Mustache=factory}})(this,function(){var exports={};exports.name="mustache.js";exports.version="0.7.2";exports.tags=["{{","}}"];exports.Scanner=Scanner;exports.Context=Context;exports.Writer=Writer;var whiteRe=/\s*/;var spaceRe=/\s+/;var nonSpaceRe=/\S/;var eqRe=/\s*=/;var curlyRe=/\s*\}/;var tagRe=/#|\^|\/|>|\{|&|=|!/;function testRe(re,string){return RegExp.prototype.test.call(re,string)}function isWhitespace(string){return!testRe(nonSpaceRe,string)}var isArray=Array.isArray||function(obj){return Object.prototype.toString.call(obj)==="[object Array]"};function escapeRe(string){return string.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g,"\\$&")}var entityMap={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;","/":"&#x2F;"};function escapeHtml(string){return String(string).replace(/[&<>"'\/]/g,function(s){return entityMap[s]})}exports.escape=escapeHtml;function Scanner(string){this.string=string;this.tail=string;this.pos=0}Scanner.prototype.eos=function(){return this.tail===""};Scanner.prototype.scan=function(re){var match=this.tail.match(re);if(match&&match.index===0){this.tail=this.tail.substring(match[0].length);this.pos+=match[0].length;return match[0]}return""};Scanner.prototype.scanUntil=function(re){var match,pos=this.tail.search(re);switch(pos){case-1:match=this.tail;this.pos+=this.tail.length;this.tail="";break;case 0:match="";break;default:match=this.tail.substring(0,pos);this.tail=this.tail.substring(pos);this.pos+=pos}return match};function Context(view,parent){this.view=view;this.parent=parent;this.clearCache()}Context.make=function(view){return view instanceof Context?view:new Context(view)};Context.prototype.clearCache=function(){this._cache={}};Context.prototype.push=function(view){return new Context(view,this)};Context.prototype.lookup=function(name){var value=this._cache[name];if(!value){if(name==="."){value=this.view}else{var context=this;while(context){if(name.indexOf(".")>0){var names=name.split("."),i=0;value=context.view;while(value&&i<names.length){value=value[names[i++]]}}else{value=context.view[name]}if(value!=null){break}context=context.parent}}this._cache[name]=value}if(typeof value==="function"){value=value.call(this.view)}return value};function Writer(){this.clearCache()}Writer.prototype.clearCache=function(){this._cache={};this._partialCache={}};Writer.prototype.compile=function(template,tags){var fn=this._cache[template];if(!fn){var tokens=exports.parse(template,tags);fn=this._cache[template]=this.compileTokens(tokens,template)}return fn};Writer.prototype.compilePartial=function(name,template,tags){var fn=this.compile(template,tags);this._partialCache[name]=fn;return fn};Writer.prototype.compileTokens=function(tokens,template){var fn=compileTokens(tokens);var self=this;return function(view,partials){if(partials){if(typeof partials==="function"){self._loadPartial=partials}else{for(var name in partials){self.compilePartial(name,partials[name])}}}return fn(self,Context.make(view),template)}};Writer.prototype.render=function(template,view,partials){return this.compile(template)(view,partials)};Writer.prototype._section=function(name,context,text,callback){var value=context.lookup(name);switch(typeof value){case"object":if(isArray(value)){var buffer="";for(var i=0,len=value.length;i<len;++i){buffer+=callback(this,context.push(value[i]))}return buffer}return value?callback(this,context.push(value)):"";case"function":var self=this;var scopedRender=function(template){return self.render(template,context)};var result=value.call(context.view,text,scopedRender);return result!=null?result:"";default:if(value){return callback(this,context)}}return""};Writer.prototype._inverted=function(name,context,callback){var value=context.lookup(name);if(!value||isArray(value)&&value.length===0){return callback(this,context)}return""};Writer.prototype._partial=function(name,context){if(!(name in this._partialCache)&&this._loadPartial){this.compilePartial(name,this._loadPartial(name))}var fn=this._partialCache[name];return fn?fn(context):""};Writer.prototype._name=function(name,context){var value=context.lookup(name);if(typeof value==="function"){value=value.call(context.view)}return value==null?"":String(value)};Writer.prototype._escaped=function(name,context){return exports.escape(this._name(name,context))};function compileTokens(tokens){var subRenders={};function subRender(i,tokens,template){if(!subRenders[i]){var fn=compileTokens(tokens);subRenders[i]=function(writer,context){return fn(writer,context,template)}}return subRenders[i]}return function(writer,context,template){var buffer="";var token,sectionText;for(var i=0,len=tokens.length;i<len;++i){token=tokens[i];switch(token[0]){case"#":sectionText=template.slice(token[3],token[5]);buffer+=writer._section(token[1],context,sectionText,subRender(i,token[4],template));break;case"^":buffer+=writer._inverted(token[1],context,subRender(i,token[4],template));break;case">":buffer+=writer._partial(token[1],context);break;case"&":buffer+=writer._name(token[1],context);break;case"name":buffer+=writer._escaped(token[1],context);break;case"text":buffer+=token[1];break}}return buffer}}function nestTokens(tokens){var tree=[];var collector=tree;var sections=[];var token;for(var i=0,len=tokens.length;i<len;++i){token=tokens[i];switch(token[0]){case"#":case"^":sections.push(token);collector.push(token);collector=token[4]=[];break;case"/":var section=sections.pop();section[5]=token[2];collector=sections.length>0?sections[sections.length-1][4]:tree;break;default:collector.push(token)}}return tree}function squashTokens(tokens){var squashedTokens=[];var token,lastToken;for(var i=0,len=tokens.length;i<len;++i){token=tokens[i];if(token[0]==="text"&&lastToken&&lastToken[0]==="text"){lastToken[1]+=token[1];lastToken[3]=token[3]}else{lastToken=token;squashedTokens.push(token)}}return squashedTokens}function escapeTags(tags){return[new RegExp(escapeRe(tags[0])+"\\s*"),new RegExp("\\s*"+escapeRe(tags[1]))]}exports.parse=function(template,tags){template=template||"";tags=tags||exports.tags;if(typeof tags==="string")tags=tags.split(spaceRe);if(tags.length!==2){throw new Error("Invalid tags: "+tags.join(", "))}var tagRes=escapeTags(tags);var scanner=new Scanner(template);var sections=[];var tokens=[];var spaces=[];var hasTag=false;var nonSpace=false;function stripSpace(){if(hasTag&&!nonSpace){while(spaces.length){tokens.splice(spaces.pop(),1)}}else{spaces=[]}hasTag=false;nonSpace=false}var start,type,value,chr;while(!scanner.eos()){start=scanner.pos;value=scanner.scanUntil(tagRes[0]);if(value){for(var i=0,len=value.length;i<len;++i){chr=value.charAt(i);if(isWhitespace(chr)){spaces.push(tokens.length)}else{nonSpace=true}tokens.push(["text",chr,start,start+1]);start+=1;if(chr==="\n"){stripSpace()}}}start=scanner.pos;if(!scanner.scan(tagRes[0])){break}hasTag=true;type=scanner.scan(tagRe)||"name";scanner.scan(whiteRe);if(type==="="){value=scanner.scanUntil(eqRe);scanner.scan(eqRe);scanner.scanUntil(tagRes[1])}else if(type==="{"){var closeRe=new RegExp("\\s*"+escapeRe("}"+tags[1]));value=scanner.scanUntil(closeRe);scanner.scan(curlyRe);scanner.scanUntil(tagRes[1]);type="&"}else{value=scanner.scanUntil(tagRes[1])}if(!scanner.scan(tagRes[1])){throw new Error("Unclosed tag at "+scanner.pos)}if(type==="/"){if(sections.length===0){throw new Error('Unopened section "'+value+'" at '+start)}var section=sections.pop();if(section[1]!==value){throw new Error('Unclosed section "'+section[1]+'" at '+start)}}var token=[type,value,start,scanner.pos];tokens.push(token);if(type==="#"||type==="^"){sections.push(token)}else if(type==="name"||type==="{"||type==="&"){nonSpace=true}else if(type==="="){tags=value.split(spaceRe);if(tags.length!==2){throw new Error("Invalid tags at "+start+": "+tags.join(", "))}tagRes=escapeTags(tags)}}var section=sections.pop();if(section){throw new Error('Unclosed section "'+section[1]+'" at '+scanner.pos)}return nestTokens(squashTokens(tokens))};var _writer=new Writer;exports.clearCache=function(){return _writer.clearCache()};exports.compile=function(template,tags){return _writer.compile(template,tags)};exports.compilePartial=function(name,template,tags){return _writer.compilePartial(name,template,tags)};exports.compileTokens=function(tokens,template){return _writer.compileTokens(tokens,template)};exports.render=function(template,view,partials){return _writer.render(template,view,partials)};exports.to_html=function(template,view,partials,send){var result=exports.render(template,view,partials);if(typeof send==="function"){send(result)}else{return result}};return exports}());
+    </script>
+    <!-- LINKEDIN BADGE !-->
+    <script type="text/javascript" src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>
+</head>
+<body>
+    <!-- ******HEADER****** --> 
+    <header class="header">
+        <div class="container clearfix">                       
+            <img class="profile-image img-fluid float-left" src="assets/images/profile.png" alt="Robert Hamilton" />
+            <div class="profile-content float-left">
+                <h1 class="name">Robert Hamilton</h1>
+                <h2 class="desc">Data Scientist</h2>   
+                <ul class="social list-inline">
+                    <li class="list-inline-item"><a href="https://www.twitter.com/rob1ham"><i class="fab fa-twitter"></i></a></li>
+                    <li class="list-inline-item"><a href="https://www.linkedin.com/in/robdoesdata/"><i class="fab fa-linkedin-in"></i></a></li>
+                    <li class="list-inline-item"><a href="https://github.com/RobDoesData"><i class="fab fa-github-alt"></i></a></li>    
+                    <!--<li class="list-inline-item"><a href="#"><i class="fab fa-stack-overflow"></i></a></li>   
+                    <li class="list-inline-item last-item"><a href="#"><i class="fab fa-codepen"></i></a></li>     -->           
+                </ul> 
+            </div><!--//profile-->
+            <div class="btn btn-space float-right">
+            <a class="btn btn-cta-primary float-top" href="mailto:rob@robdoesdata.com?Subject=Hello!" target="_top"><i class="fas fa-paper-plane"></i> Contact Me</a>              
+            <a class="btn btn-cta-secondary btn-download float-bottom" href="https://robdoesdata.s3.amazonaws.com/assets/Robert+D+Hamilton+Resume.pdf" target="_blank"><i class="fas fa-download"></i> View Resume</a>
+        </div>
+        </div><!--//container-->
+    </header><!--//header-->
+    
+    <div class="container sections-wrapper">
+        <div class="row">
+            <div class="primary col-lg-8 col-12">
+                <section class="about section">
+                    <div class="section-inner">
+                        <h2 class="heading">About Me</h2>
+                        <div class="content">
+                            <p>I am a Data Scientist, Project Manager and Sales Engineer who aims to accelerate growth in businesses by deriving insights, while also implementing actionable and scalabe workflows.</p>
+                            
+                            <p>Prior to my career in Data Science, I received a Bachelor's degree in both Mathematics and Economics. After college, I worked in Advertising Operations and as a Digital Media Analyst.</p>
+
+                            <p>I have worked with big data, across billions of weather forecasts, and trillions of geospatial data points. I have abstracted complex ETL data flows into practical APIs that feed into existing business practices and catalyze improved decision making.</p>
+
+                           
+                        </div><!--//content-->
+                    </div><!--//section-inner-->                 
+                </section><!--//section-->
+    
+               <section class="latest section">
+                    <div class="section-inner">
+                        <h2 class="heading">Latest Open Source Projects</h2>
+                        <div class="content">    
+                                               
+                            <div class="item featured text-center">
+                                <h3 class="title"><a href="https://github.com/Rob1Ham/omega2020-ds" target="_blank">Omega 2020</a></h3>
+                                <p class="summary">Sudoku Computer Vision Pipeline</p>
+                                <div class="featured-image has-ribbon">
+                                    <a href="https://github.com/Rob1Ham/omega2020-ds" target="_blank">
+                                    <img class="img-fluid project-image" src="assets/images/projects/omega2020-header.png" alt="Omega2020" />
+                                    </a>
+                                    <div class="ribbon">
+                                        <div class="text">New</div>
+                                    </div>
+                                </div>
+                                    
+                                <div class="desc text-left">                                    
+                                    <p>Omega2020 is a computer vision pipeline which processes paper copies of Sudoku Puzzles, and encodes them in a Computer Vision Pipeline to derive predicted digits and puzzle solution. The API is serverless, utilizing AWS Lambda and API Gateway. The core image processing tasks are handled within a Flask App, and the computer vision pipeline leverages AWS Sagemaker and Groundtruth for continual learning over time.</p>
+                                    <p> If you are interested in a detailed architecture diagram, check out the <a href="https://github.com/Rob1Ham/omega2020-ds#tech-stack" target="_blank">Project's Git Hub page!</a>
+                                </div><!--//desc-->         
+
+                            </div><!--//item-->
+                            <hr class="divider" />
+                            <div class="item row">
+                                <a class="col-md-4 col-12" href="https://github.com/Rob1Ham/PicMetric-DS" target="_blank">
+                                <img class="img-fluid project-image" src="assets/images/projects/picmetric_yolo.png" alt="PicMetric" />
+                                </a>
+                                <div class="desc col-md-8 col-12">
+                                    <h3 class="title"><a href="https://github.com/Rob1Ham/PicMetric-DS" target="_blank">PicMetric - Learn more about your photos!</a></h3>
+                                    <p class="mb-2">Picmetric is a lightweight service allowing for quick image processing across popular open source libraries such as YoloV3, RESNET50, and Multi-task Cascaded Convolutional Neural Networks for facial recognition.</p>
+                                    <p><a class="more-link" href="https://github.com/Rob1Ham/PicMetric-DS" target="_blank"><i class="fas fa-external-link-alt"></i>Find out more</a></p>
+                                </div><!--//desc-->                          
+                            </div><!--//item-->
+                            
+                            <div class="item row">
+                                <a class="col-md-4 col-12" href="http://csgo-predictor.herokuapp.com/" target="_blank">
+                                <img class="img-fluid project-image" src="assets/images/projects/csgo.jpeg" alt="CSGO Predictor" />
+                                </a>
+                                <div class="desc col-md-8 col-12">
+                                    <h3 class="title"><a href="http://csgo-predictor.herokuapp.com/" target="_blank">Counter Strike Round Predictor</a></h3>
+                                    <p class="mb-2">After manually scraping thousands of game statistics from the popular video game Counter Strike: Global Offensive, I published an interactive prediction tool to determine which team would win the next round. Additionally, I wrote a blog post accompaning my model to review some of the concepts I explored in the process</p>
+                                    <p><i class="fas fa-external-link-alt"></i><a href="http://csgo-predictor.herokuapp.com/" target="_blank"> Visit the microsite</a></p>
+                                    <p> <i class="fas fa-external-link-alt"></i><a href="http://csgo-predictor.herokuapp.com/predictions" target="_blank"> Use the model</a></p>
+                                    <p>  <i class="fas fa-external-link-alt"></i> <a href="http://csgo-predictor.herokuapp.com/process" target="_blank"> Read the blog post</a></p>
+                                </div><!--//desc-->                          
+                            </div><!--//item-->
+                            
+                            
+                            <div class="item row">
+                                <a class="col-md-4 col-12" href="https://github.com/RobDoesData/blockchain_to_dataframe/blob/master/Blockchain_To_Dataframe.ipynb" target="_blank">
+                                <img class="img-fluid project-image" src="assets/images/projects/bitcoin.jpg" alt="Blockchain to Dataframe" />
+                                </a>
+                                <div class="desc col-md-8 col-12">
+                                    <h3 class="title"><a href="https://github.com/RobDoesData/blockchain_to_dataframe/blob/master/Blockchain_To_Dataframe.ipynb" target="_blank">From Blockchain to Dataframe</a></h3>
+                                    <p class="mb-2">In this Jupyter Notebook, I pubsish my early work with the Python-BitcoinRPC library to extract Bitcoin's Blockchain data into a Pandas Dataframe to enable visualiztion and analysis using your own Bitcoin Node.</p>
+                                    <p><a class="more-link" href="https://github.com/RobDoesData/blockchain_to_dataframe/blob/master/Blockchain_To_Dataframe.ipynb" target="_blank"><i class="fas fa-external-link-alt"></i>Read Here</a></p>
+                                </div><!--//desc-->                          
+                            </div><!--//item-->                            
+                            
+                        </div><!--//content-->  
+                    </div><!--//section-inner-->                
+                </section><!--//section-->
+                
+                <!-- <section class="projects section">
+                    <div class="section-inner">
+                        <h2 class="heading">Other Projects</h2>
+                        <div class="content">
+                            <div class="item">
+                                <h3 class="title"><a href="https://themes.3rdwavemedia.com/bootstrap-templates/resume/free-bootstrap4-resume-cv-template-for-developers-pillar/" target="_blank">Pillar - Free Bootstrap 4 Resume/CV Template for Developers</a> <span class="badge badge-theme">Free</span></h3>
+                                <p class="summary">Provide a brief description of your project. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatu.</p>
+                                <p><a class="more-link" href="https://themes.3rdwavemedia.com/bootstrap-templates/resume/free-bootstrap4-resume-cv-template-for-developers-pillar/" target="_blank"><i class="fas fa-external-link-alt"></i>Download Now</a></p>
+                            </div>
+                            <div class="item">
+                                <h3 class="title"><a href="https://themes.3rdwavemedia.com/bootstrap-templates/speciality/devblog-free-bootstrap-4-blog-template-for-developers/" target="_blank">DevBlog - Free Bootstrap 4 Blog Template for Developers</a> <span class="badge badge-theme">Free</span></h3>
+                                <p class="summary">Provide a brief description of your project. Maecenas ornare ultricies risus, in fermentum augue consectetur in. Vestibulum vitae mauris iaculis, sollicitudin velit in, molestie nulla. </p>
+                                <p><a class="more-link" href="https://themes.3rdwavemedia.com/bootstrap-templates/speciality/devblog-free-bootstrap-4-blog-template-for-developers/" target="_blank"><i class="fas fa-external-link-alt"></i>Download Now</a></p>
+                            </div>
+                            <div class="item">
+                                <h3 class="title"><a href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/nova-bootstrap-landing-page-template-for-mobile-apps/" target="_blank">Nova - Free App Landing Page Template for App Developers</a> <span class="badge badge-theme">Free</span></h3>
+                                <p class="summary">Provide a brief description of your project. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vel purus enim. Etiam tortor felis, fermentum ac ultrices sed.</p>
+                                <p><a class="more-link" href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/nova-bootstrap-landing-page-template-for-mobile-apps/" target="_blank"><i class="fas fa-external-link-alt"></i>Download Now</a></p>
+                            </div>
+                            
+                            <a class="btn btn-cta-secondary" href="#">More on CoderWall <i class="fas fa-chevron-right"></i></a>
+                            
+                        </div> 
+                    </div>                
+                </section> -->
+
+                <section class="experience section">
+                    <div class="section-inner">
+                        <h2 class="heading">Work Experience</h2>
+                        <div class="content">
+                        	<div class="item">
+                                <h3 class="title">Lead Data Scientist - Advanced Analytics, Weather and Climate Practice, IBM</a></span> <span class="year">(2020 - 2021)</span></h3>
+                                <ul>
+                                    <li>Designed and built an enterprise data platform that processed tens of terabytes of geospatial data daily, resulting in a multi-year, $10 million dollar licensing agreement </li>
+                                    <li>Spearheaded an incubation team that rapidly iterated new applications of the data platform to increase value to client</li>
+                                    <li>Managed a team of five data scientists as project manager to prioritize engineering sprints</li>
+                                </ul>
+                                            
+                            </div><!--//item-->
+                            <div class="item">
+                                <h3 class="title">Services Lead - Watson Advertising, IBM</a></span> <span class="year">(2018 - 2019)</span></h3>
+                                <ul>
+                                    <li>Managed Services business case around IBM’s acquisition of Weather Company for media and entertainment.</li>
+                                    <li>Automated ETL pipelines across AWS EMR, Hadoop, NodeJS and Postgres Databases for bespoke client demos and insights</li>
+                                    <li>Expanded Weather targeting functionality from the US to Europe using a privacy compliant methodology</li>
+                                    <li>Aggregate data and utilize self-organizing maps to associate US Census tracts to European Regions</li>
+                                    <li>Leveraged first party weather, socioeconomic, and behavioral data to inform the proper place and time to serve advertisements to users of the Weather Company website and mobile app for more impactful engagement</li>
+                                    <li>Implemented and maintained a machine learning pipeline, organizing data from Hadoop, APIs and databases</li>
+                                    <li>Case Study showed a 31% increase of in-store visitation versus control group and 53% reduction in media waste</li>
+
+                                </ul>
+                                            
+                            </div><!--//item-->
+                            <div class="item">
+                                <h3 class="title">Operations Analyst - OpenX Technologies <span class="year">(2015 - 2018)</span></h3>
+                                    <ul>
+                                        <li>Operational advisor for East Coast Account Mangers and Publishers</li>
+                                        <li>Review integrations of publishers to assess yield opportunities and identify areas of potential revenue</li>
+                                        <li>Automated Business Review data gathering by organizing an R script to pull data across different sources</li> 
+                                        <li> Created Account Manager Dashboards with alerting systems to proactively identify anomalies of performance and revenue</li>  
+                                        <li>Maintain a book of ~30 publishers as the primary point of contact at OpenX worth $25 Million a year</li>
+                                        <li>Collaborate with Sales to identify and pitch upsell opportunities by assessing industry and publisher trends</li>
+                                        <li>Piloted Mobile App Integrations, working alongside Project Management and client for a successful launch</li>
+                                        <li>Integrate new clients after close of negotiations</li>
+                                        <li>As an Ad Server Specialist, led trainings and troubleshooting for Product</li>
+                                        <li>Solicit customer feedback to inform internal roadmaps</li>
+                                        <li>Trace ad calls and diagnose issues for troubleshooting using OpenRTB specifications</li>
+                                        <li>Work with clients as a consultant to drive revenue and increase use of OpenX product offerings</li>
+                                    </ul>
+                            </div><!--//item-->
+                            
+                            <div class="item">
+                                <h3 class="title">Manager of Digital Media - Major League Gaming <span class="year">(2012 - 2015)</span></h3>
+                                <ul>
+                                    <li>Maintain advertising demand stack and adjusting for yield and performance</li>
+                                    <li>Supervised technical implementation of Video and Display SSP and Ad Server and DMP</li>
+                                    <li>Interface with finance team as the individual responsible for all digital media billing and reconciliation</li>
+                                    <li>Create customized media plans and RFPs structured to meet clients’ marketing objectives</li>
+                                    <li>Team liaison to engineering for all Ad Technology deployment cycles</li>
+                                    <li>Integrate affiliate sites to establish a publisher network</li>
+
+                                </ul>
+                            </div><!--//item-->
+                            
+                        </div><!--//content-->  
+                    </div><!--//section-inner-->                 
+                </section><!--//section-->
+                <section class="github section">
+                    <div class="section-inner">
+                            <h2 class="heading">My GitHub</h2>
+
+                            <div id="github-graph" class="github-graph">
+    
+                            </div><!--//github-graph-->
+    
+                            <!--//Usage: https://caseyscarborough.com/projects/github-activity/ -->
+                            <div id="ghfeed" class="ghfeed">
+                            </div><!--//ghfeed-->
+    
+                        </div><!--//secton-inner-->
+                </section><!--//section-->
+            </div><!--//primary-->
+            <div class="secondary col-lg-4 col-12">
+                 <aside class="info aside section">
+                    <div class="section-inner">
+                        <h2 class="heading sr-only">Basic Information</h2>
+                        <div class="content">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-map-marker-alt"></i><span class="sr-only">Location:</span>Scranton, PA</li>
+                                <li><i class="fas fa-envelope"></i><span class="sr-only">Email:</span><a href="mailto:rob@robdoesdata.com?Subject=Hello!">Rob@robdoesdata.com</a></li>
+                                <li><i class="fas fa-link"></i><span class="sr-only">Website:</span><a href="https://www.robdoesdata.com">https://www.robdoesdata.com</a></li>
+                            </ul>
+                        </div><!--//content-->  
+                    </div><!--//section-inner-->                 
+                </aside><!--//aside-->
+                
+                <aside class="skills aside section">
+                    <div class="section-inner">
+                        <h2 class="heading">Core Skills</h2>
+                        <div class="content">
+                            
+                            <div class="skillset">
+                                    <button type="button" class="btn btn-outline-primary">Python</button>
+                                    <button type="button" class="btn btn-outline-primary">SQL</button>
+                                    <button type="button" class="btn btn-outline-primary">PySpark</button>
+                                    <button type="button" class="btn btn-outline-primary">NLP</button>
+                                    <button type="button" class="btn btn-outline-primary">Scraping</button>
+                                    <button type="button" class="btn btn-outline-primary">Hyperparamatization</button>
+                                    <button type="button" class="btn btn-outline-primary">Dashboards</button>
+                                    <button type="button" class="btn btn-outline-primary">Data Visualization</button>
+                                    <button type="button" class="btn btn-outline-primary">Linear Regression</button>
+                                    <button type="button" class="btn btn-outline-primary">Logistic Regression</button>
+                                    <button type="button" class="btn btn-outline-primary">SVD</button>
+                                    <button type="button" class="btn btn-outline-primary">K-Clustering</button>
+                                    <button type="button" class="btn btn-outline-primary">SHAP Values</button>
+                                    <button type="button" class="btn btn-outline-primary">Partial dependence Plots</button>
+                                
+                            </div>              
+                        </div><!--//content-->  
+                    </div><!--//section-inner-->                 
+                </aside><!--//section-->
+                <aside class="skills aside section">
+                        <div class="section-inner">
+                            <h2 class="heading">Frameworks & Technologies</h2>
+                            <div class="content">
+                                
+                                <div class="skillset">
+                                        <button type="button" class="btn btn-outline-secondary">Tensorflow</button>
+                                        <button type="button" class="btn btn-outline-secondary">PySpark</button>
+                                        <button type="button" class="btn btn-outline-secondary">Flask</button>
+                                        <button type="button" class="btn btn-outline-secondary">Hadoop</button>
+                                        <button type="button" class="btn btn-outline-secondary">Plotly Dash</button>
+                                        <button type="button" class="btn btn-outline-secondary">Scikit-learn</button>
+                                        <button type="button" class="btn btn-outline-secondary">AWS Sagemaker</button>
+                                        <button type="button" class="btn btn-outline-secondary">AWS Lambda</button>
+                                        <button type="button" class="btn btn-outline-secondary">API Gateway</button>
+                                        <button type="button" class="btn btn-outline-secondary">AWS Elastic Beanstalk</button>
+                                        
+                                </div>              
+                            </div><!--//content-->  
+                        </div><!--//section-inner-->                 
+
+                
+                <!-- <aside class="testimonials aside section">
+                    <div class="section-inner">
+                        <h2 class="heading">Testimonials</h2>
+                        <div class="content">
+                            <div class="item">
+                                <blockquote class="quote">                                  
+                                    <p><i class="fas fa-quote-left"></i>James is an excellent software engineer and he is passionate about what he does. You can totally count on him to deliver your projects!</p>
+                                </blockquote>                
+                                <p class="source"><span class="name">Tim Adams</span><br /><span class="title">Curabitur commodo</span></p>                                                             
+                            </div><
+                            
+                            <p><a class="more-link" href="#"><i class="fas fa-external-link-alt"></i>More on Linkedin</a></p> 
+                            
+                        </div>
+                    </div>
+                </aside> -->
+                
+                <aside class="education aside section">
+                    <div class="section-inner">
+                        <h2 class="heading">Education</h2>
+                        <div class="content">
+                            <div class="item">                      
+                                <h3 class="title"><i class="fas fa-graduation-cap"></i> Lambda School</h3>
+                                <h4 class="university">Data Science <span class="year">(2020)</span></h4>
+                            </div><!--//item-->
+                            <div class="item">
+                                <h3 class="title"><i class="fas fa-graduation-cap"></i> BA Math & Economics</h3>
+                                <h4 class="university">Pace University <span class="year"></span></h4>
+                            </div><!--//item-->
+                        </div><!--//content-->
+                    </div><!--//section-inner-->
+                </aside>
+                
+            </aside><!--//section-->
+            <aside class="skills aside section">
+                <div class="section-inner">
+                        <div class="LI-profile-badge"  data-version="v1" data-size="medium" data-locale="en_US" data-type="horizontal" data-theme="light" data-vanity="robdoesdata"><a class="LI-simple-link" href='https://www.linkedin.com/in/robdoesdata?trk=profile-badge'>Robert Hamilton</a></div>
+                </div>
+            </aside>
+                <!--//section-->
+                            
+                <!-- <aside class="languages aside section">
+                    <div class="section-inner">
+                        <h2 class="heading">Languages</h2>
+                        <div class="content">
+                            <ul class="list-unstyled">
+                                <li class="item">
+                                    <span class="title"><strong>English:</strong></span>
+                                    <span class="level">Native Speaker <br class="visible-xs"/><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> </span>
+                                </li>
+                                <li class="item">
+                                    <span class="title"><strong>Spanish:</strong></span>
+                                    <span class="level">Professional Proficiency <br class="visible-sm visible-xs"/><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star-half"></i></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+                 -->
+                <!-- <aside class="blog aside section">
+                    <div class="section-inner">
+                        <h2 class="heading">Latest Blog Posts</h2>
+                        <p>You can use Sascha Depold's <a href="https://github.com/sdepold/jquery-rss" target="_blank">jQuery RSS plugin</a> to pull in your blog post feeds.</p>
+                        <div id="rss-feeds" class="content">
+
+                        </div>
+                    </div>
+                </aside> -->
+                
+                
+              
+            </div><!--//secondary-->    
+        </div><!--//row-->
+    </div><!--//masonry-->
+    
+    <!-- ******FOOTER****** --> 
+    <footer class="footer">
+        <div class="container text-center">
+                <!--/* This template is free as long as you keep the attribution link below. Thank you for your support. :) If you'd like to use the template without the attribution, you can buy the commercial license via our website: themes.3rdwavemedia.com */-->
+                <small class="copyright">robdoesdata © 2020</small>
+        </div><!--//container-->
+    </footer><!--//footer-->
+
+    <!-- Javascript -->
+    <script type="text/javascript" src="assets/plugins/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="assets/plugins/popper.min.js"></script>
+    <script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="assets/plugins/jquery-rss/dist/jquery.rss.min.js"></script>
+    <!-- github calendar plugin -->
+    <script type="text/javascript" src="assets/plugins/github-calendar/dist/github-calendar.min.js"></script>
+    <!-- github activity plugin -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
+    <script type="text/javascript" src="assets/plugins/github-activity/github-activity-0.1.5.min.js"></script>
+    <!-- custom js -->
+    <script type="text/javascript" src="assets/js/main.js"></script>
+</body>
+</html>
+
